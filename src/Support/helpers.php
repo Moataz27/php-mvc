@@ -1,11 +1,24 @@
 <?php
 
+use Mvc\Application;
 use Mvc\View\View;
 
 if (!function_exists('env')) {
     function env($key, $default = null)
     {
         return $_ENV[$key] ?? value($default);
+    }
+}
+
+if (!function_exists('app')) {
+    function app()
+    {
+        static $instance = null;
+
+        if (!$instance)
+            $instance = new Application;
+
+        return $instance;
     }
 }
 
