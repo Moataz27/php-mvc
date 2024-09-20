@@ -1,9 +1,6 @@
 <?php
 
 use Dotenv\Dotenv;
-use Mvc\Http\Route;
-use Mvc\Http\Request;
-use Mvc\Http\Response;
 
 require_once __DIR__ . '/../src/Support/helpers.php';
 
