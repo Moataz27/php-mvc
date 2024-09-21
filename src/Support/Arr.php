@@ -11,6 +11,59 @@ class Arr
         return array_intersect_key($array, array_flip((array)$keys));
     }
 
+    public static function except(array $array, array|string $keys)
+    {
+        static::forget($array, $keys);
+
+        return $array;
+    }
+
+    public static function flatten(array $array, float $depth = INF): array
+    {
+        $result = [];
+
+        foreach ($array as $item) {
+            if (!is_array($item))
+                $result[] = $item;
+            else if ($depth == 1)
+                $result = array_merge($result, array_values($item));
+            else
+                $result = array_merge($result, static::flatten($item, $depth - 1));
+        }
+
+        return $result;
+    }
+
+    public static function get(array $array, string $key, mixed $default = null): mixed
+    {
+        if (!static::accessible($array))
+            return value($default);
+
+        if (static::exists($array, $key))
+            return $array[$key];
+
+        foreach (explode('.', $key) as $segment) {
+            if (static::exists($array, $segment))
+                $array = $array[$segment];
+            else
+                return value($default);
+        }
+
+        return $array;
+    }
+
+    public static function set(array &$array, string $key, mixed $value): void
+    {
+        $keys = explode('.', $key);
+
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            $array = &$array[$key];
+        }
+
+        $array[array_shift($keys)] = $value;
+    }
+
     public static function accessible($value): bool
     {
         return is_array($value) || $value instanceof ArrayAccess;
@@ -94,8 +147,8 @@ class Arr
                 } else
                     continue;
             }
-            
-            unset($array[array_pop($segments)]);
+
+            unset($array[array_shift($segments)]);
         }
     }
 }
