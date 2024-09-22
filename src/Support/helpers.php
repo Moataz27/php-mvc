@@ -49,3 +49,10 @@ if (!function_exists('view')) {
         View::make($view, $params);
     }
 }
+
+if (!function_exists('config_path')) {
+    function config_path()
+    {
+        return base_path() . 'config/';
+    }
+}
