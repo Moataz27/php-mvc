@@ -1,8 +1,6 @@
 <?php
 
 use Dotenv\Dotenv;
-use Mvc\Support\Arr;
-use Mvc\Support\Config;
 
 require_once __DIR__ . '/../src/Support/helpers.php';
 
