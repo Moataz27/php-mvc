@@ -15,8 +15,9 @@ if (!function_exists('app')) {
     {
         static $instance = null;
 
-        if (!$instance)
-            $instance = new Application;
+        if (!$instance) {
+            $instance = new Application();
+        }
 
         return $instance;
     }
@@ -54,5 +55,19 @@ if (!function_exists('config_path')) {
     function config_path()
     {
         return base_path() . 'config/';
+    }
+}
+
+if (!function_exists('config')) {
+    function config(string|array $key = null, mixed $default = null)
+    {
+        if (is_null($key)) {
+            return app()->config;
+        }
+        if (is_array($key)) {
+            return app()->config->set($key);
+        }
+
+        return app()->config->get($key, $default);
     }
 }

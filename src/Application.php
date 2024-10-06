@@ -19,8 +19,8 @@ class Application
 
     public function __construct()
     {
-        $this->request = new Request;
-        $this->response = new Response;
+        $this->request = new Request();
+        $this->response = new Response();
         $this->route = new Route($this->request, $this->response);
         $this->config = new Config($this->loadConfigurations());
     }
@@ -30,11 +30,21 @@ class Application
         $this->route->resolve();
     }
 
-    protected function loadConfigurations() {}
+    protected function loadConfigurations()
+    {
+        foreach (scandir(config_path()) as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+            $fileName = explode('.', $file)[0];
+            yield $fileName => require config_path() . $file;
+        }
+    }
 
     public function __get($name)
     {
-        if (property_exists($this, $name))
+        if (property_exists($this, $name)) {
             return $this->$name;
+        }
     }
 }
