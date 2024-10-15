@@ -1,6 +1,8 @@
 <?php
 
 use Dotenv\Dotenv;
+use Mvc\Validation\Rules\AlphaNumericalRule;
+use Mvc\Validation\Rules\RequiredRule;
 use Mvc\Validation\Validator;
 
 require_once __DIR__ . '/../src/Support/helpers.php';
@@ -18,7 +20,9 @@ app()->run();
 $validator = new Validator;
 
 $validator->setRules([
-    'username' => 'required|alnum',
+    'username'  => 'required|alnum',
+    'email'     => ['required', 'alnum'],
+    'test'      => [new RequiredRule, new AlphaNumericalRule],
 ]);
 
 $validator->setAliases(['username'  => 'name']);

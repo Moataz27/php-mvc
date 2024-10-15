@@ -6,6 +6,11 @@ use Mvc\Validation\Rules\AlphaNumericalRule;
 use Mvc\Validation\Rules\Contract\Rule;
 use Mvc\Validation\Rules\RequiredRule;
 
+/** 
+ * [new RuleClass, new AnotherRuleClass],
+ * ['required', 'alnum']
+ * 'required|alnum'
+ */
 class Validator
 {
     protected array $data = [];
@@ -35,17 +40,25 @@ class Validator
 
     protected function resolveRules(string|array $rules): array
     {
-        if (is_string($rules)) {
-            $rules = str_contains($rules, '|') ? explode('|', $rules) : [$rules];
-        }
-        return $rules;
+        $rules = is_string($rules) ? $this->resolveRulesFromString($rules) : $rules;
+
+        return array_map(function ($rule) {
+            return is_string($rule) ? $this->mapRuleFromString($rule) : $rule;
+        }, $rules);
+    }
+
+    protected function resolveRulesFromString(string $rules, string $seperator = '|'): array
+    {
+        return explode($seperator, $rules);
+    }
+
+    protected function mapRuleFromString(string $rule): Rule
+    {
+        return new $this->ruleMap[$rule];
     }
 
     protected function applyRule(string $field, Rule|string $rule)
     {
-        if (is_string($rule))
-            $rule = new $this->ruleMap[$rule];
-
         if (!$rule->apply($field, $this->getFieldValue($field), $this->data))
             $this->errorBag->add($field, Message::generate($rule, $this->alias($field)));
     }
