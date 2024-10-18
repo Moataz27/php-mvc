@@ -18,7 +18,7 @@ app()->run();
 $validator = new Validator;
 
 $validator->setRules([
-    'username' => ['between:5,10']
+    'username' => ['max:20']
     // 'username'  => 'required|alnum',
     // 'email'     => ['required', 'alnum'],
     // 'test'      => [new RequiredRule, new AlphaNumericalRule],
@@ -26,6 +26,6 @@ $validator->setRules([
 
 $validator->setAliases(['username'  => 'name']);
 
-$validator->make(['username' => 'adssddssadasdasd']);
+$validator->make(['username' => 'adssddsadsdiasjdasjdoasdssadasdasd']);
 
 dd($validator->errors());

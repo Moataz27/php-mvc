@@ -2,12 +2,7 @@
 
 namespace Mvc\Validation;
 
-use Mvc\Support\Arr;
-use Mvc\Validation\Rules\MaxRule;
-use Mvc\Validation\Rules\RequiredRule;
 use Mvc\Validation\Rules\Contract\Rule;
-use Mvc\Validation\Rules\AlphaNumericalRule;
-use Mvc\Validation\Rules\BetweenRule;
 
 /** 
  * [new RuleClass, new AnotherRuleClass],
@@ -20,12 +15,6 @@ class Validator
     protected array $aliases = [];
     protected array $rules = [];
     protected ErrorBag $errorBag;
-    protected array $ruleMap = [
-        'required'  => RequiredRule::class,
-        'alnum'     => AlphaNumericalRule::class,
-        'max'       => MaxRule::class,
-        'between'   => BetweenRule::class,
-    ];
 
     public function make(array $data)
     {
@@ -37,33 +26,10 @@ class Validator
     protected function validate()
     {
         foreach ($this->rules as $field => $rules) {
-            foreach ($this->resolveRules($rules) as $rule) {
+            foreach (RulesResolver::resolve($rules) as $rule) {
                 $this->applyRule($field, $rule);
             }
         }
-    }
-
-    protected function resolveRules(string|array $rules): array
-    {
-        $rules = is_string($rules) ? $this->resolveStringRule($rules) : $rules;
-
-        return array_map(function ($rule) {
-            return is_string($rule) ? $this->mapRuleFromString($rule) : $rule;
-        }, $rules);
-    }
-
-    protected function resolveStringRule(string $rule, string $seperator = '|'): array
-    {
-        return explode($seperator, $rule);
-    }
-
-    protected function mapRuleFromString(string $rule): Rule
-    {
-        $exploded = $this->resolveStringRule($rule, ':');
-        $rule = Arr::first($exploded);
-        $options = explode(',' ,Arr::last($exploded));
-
-        return new $this->ruleMap[$rule](...$options);
     }
 
     protected function applyRule(string $field, Rule $rule)
