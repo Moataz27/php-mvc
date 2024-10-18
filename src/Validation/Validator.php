@@ -2,9 +2,12 @@
 
 namespace Mvc\Validation;
 
-use Mvc\Validation\Rules\AlphaNumericalRule;
-use Mvc\Validation\Rules\Contract\Rule;
+use Mvc\Support\Arr;
+use Mvc\Validation\Rules\MaxRule;
 use Mvc\Validation\Rules\RequiredRule;
+use Mvc\Validation\Rules\Contract\Rule;
+use Mvc\Validation\Rules\AlphaNumericalRule;
+use Mvc\Validation\Rules\BetweenRule;
 
 /** 
  * [new RuleClass, new AnotherRuleClass],
@@ -18,8 +21,10 @@ class Validator
     protected array $rules = [];
     protected ErrorBag $errorBag;
     protected array $ruleMap = [
-        'required'  =>  RequiredRule::class,
-        'alnum'     =>  AlphaNumericalRule::class,
+        'required'  => RequiredRule::class,
+        'alnum'     => AlphaNumericalRule::class,
+        'max'       => MaxRule::class,
+        'between'   => BetweenRule::class,
     ];
 
     public function make(array $data)
@@ -40,24 +45,28 @@ class Validator
 
     protected function resolveRules(string|array $rules): array
     {
-        $rules = is_string($rules) ? $this->resolveRulesFromString($rules) : $rules;
+        $rules = is_string($rules) ? $this->resolveStringRule($rules) : $rules;
 
         return array_map(function ($rule) {
             return is_string($rule) ? $this->mapRuleFromString($rule) : $rule;
         }, $rules);
     }
 
-    protected function resolveRulesFromString(string $rules, string $seperator = '|'): array
+    protected function resolveStringRule(string $rule, string $seperator = '|'): array
     {
-        return explode($seperator, $rules);
+        return explode($seperator, $rule);
     }
 
     protected function mapRuleFromString(string $rule): Rule
     {
-        return new $this->ruleMap[$rule];
+        $exploded = $this->resolveStringRule($rule, ':');
+        $rule = Arr::first($exploded);
+        $options = explode(',' ,Arr::last($exploded));
+
+        return new $this->ruleMap[$rule](...$options);
     }
 
-    protected function applyRule(string $field, Rule|string $rule)
+    protected function applyRule(string $field, Rule $rule)
     {
         if (!$rule->apply($field, $this->getFieldValue($field), $this->data))
             $this->errorBag->add($field, Message::generate($rule, $this->alias($field)));

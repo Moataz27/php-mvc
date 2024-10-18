@@ -71,3 +71,10 @@ if (!function_exists('config')) {
         return app()->config->get($key, $default);
     }
 }
+
+if (!function_exists('dd')) {
+    function dd($value)
+    {
+        return die(dump(value($value)));
+    }
+}
