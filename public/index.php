@@ -18,14 +18,20 @@ app()->run();
 $validator = new Validator;
 
 $validator->setRules([
-    'username' => ['max:20']
-    // 'username'  => 'required|alnum',
-    // 'email'     => ['required', 'alnum'],
-    // 'test'      => [new RequiredRule, new AlphaNumericalRule],
+    'username'  => ['nullable', 'max:20'],
+    'remarks'   => 'prohibited',
+    'email'     => ['required', 'email'],
+    'password'  => 'required|confirmed',
+    'password_confirmation' => 'required',
 ]);
 
 $validator->setAliases(['username'  => 'name']);
 
-$validator->make(['username' => 'adssddsadsdiasjdasjdoasdssadasdasd']);
+$validator->make([
+    'username' => null,
+    'email' => 'moataz@test',
+    'password' => 'Moataz#102',
+    'password_confirmation' => 'Moataz#102d'
+]);
 
 dd($validator->errors());
