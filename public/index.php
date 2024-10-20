@@ -1,7 +1,7 @@
 <?php
 
 use Dotenv\Dotenv;
-use Mvc\Validation\Validator;
+use Mvc\Database\Grammers\MySQLGrammer;
 
 require_once __DIR__ . '/../src/Support/helpers.php';
 
@@ -15,23 +15,4 @@ $env->load();
 
 app()->run();
 
-$validator = new Validator;
-
-$validator->setRules([
-    'username'  => ['nullable', 'max:20'],
-    'remarks'   => 'prohibited',
-    'email'     => ['required', 'email'],
-    'password'  => 'required|confirmed',
-    'password_confirmation' => 'required',
-]);
-
-$validator->setAliases(['username'  => 'name']);
-
-$validator->make([
-    'username' => null,
-    'email' => 'moataz@test',
-    'password' => 'Moataz#102',
-    'password_confirmation' => 'Moataz#102d'
-]);
-
-dd($validator->errors());
+dd(MySQLGrammer::buildSelectQuery(['username', 'full_name', 'id', 'email'], ['username', 'LIKE', '%moataz%']));

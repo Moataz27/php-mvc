@@ -1,6 +1,7 @@
 <?php
 
 use Mvc\Application;
+use Mvc\Support\Hash;
 use Mvc\View\View;
 
 if (!function_exists('env')) {
@@ -76,5 +77,21 @@ if (!function_exists('dd')) {
     function dd($value)
     {
         return die(dump(value($value)));
+    }
+}
+
+if (!function_exists('bcrypt')) {
+    function bcrypt(string $password)
+    {
+        return Hash::password($password);
+    }
+}
+
+if (!function_exists('class_basename')) {
+    function class_basename($class)
+    {
+        $class = is_object($class) ? get_class($class) : $class;
+
+        return basename(str_replace('\\', '/', $class));
     }
 }
