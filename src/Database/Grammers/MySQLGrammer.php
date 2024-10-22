@@ -13,6 +13,13 @@ class MySQLGrammer
         return $query;
     }
 
+    public static function buildUpdateQuery($keys)
+    {
+        $query = 'UPDATE ' . Model::getTableName() . ' SET ' . implode(' = ?, ', $keys) . ' = ? WHERE ID = ?';
+
+        return $query;
+    }
+
     public static function buildSelectQuery($columns, $filters)
     {
         $columns = is_array($columns) ? implode(', ', $columns) : $columns;

@@ -2,6 +2,8 @@
 
 namespace Mvc;
 
+use Mvc\Database\DB;
+use Mvc\Database\Managers\MySQLManager;
 use Mvc\Http\Request;
 use Mvc\Http\Response;
 use Mvc\Http\Route;
@@ -17,16 +19,28 @@ class Application
 
     protected Config $config;
 
+    protected DB $db;
+
     public function __construct()
     {
         $this->request = new Request();
         $this->response = new Response();
         $this->route = new Route($this->request, $this->response);
         $this->config = new Config($this->loadConfigurations());
+        $this->db = new DB($this->getDatabaseDriver());
+    }
+
+    protected function getDatabaseDriver()
+    {
+        return match (env('DB_DRIVER')) {
+            'mysql' => new MySQLManager,
+            default => new MySQLManager,
+        };
     }
 
     public function run()
     {
+        $this->db->init();
         $this->route->resolve();
     }
 

@@ -23,6 +23,20 @@ abstract class Model
         return app()->db->read();
     }
 
+    public static function delete($id)
+    {
+        self::$instance = static::class;
+
+        return app()->db->delete($id);
+    }
+
+    public static function update($id, array $attributes)
+    {
+        self::$instance = static::class;
+
+        return app()->db->update($id, $attributes);
+    }
+
     public static function where($filters, $columns = '*')
     {
         self::$instance = static::class;
