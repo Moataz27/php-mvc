@@ -73,13 +73,6 @@ if (!function_exists('config')) {
     }
 }
 
-if (!function_exists('dd')) {
-    function dd($value)
-    {
-        return die(dump(value($value)));
-    }
-}
-
 if (!function_exists('bcrypt')) {
     function bcrypt(string $password)
     {

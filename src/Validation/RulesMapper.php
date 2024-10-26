@@ -12,6 +12,7 @@ use Mvc\Validation\Rules\Contract\Rule;
 use Mvc\Validation\Rules\EmailRule;
 use Mvc\Validation\Rules\NullableRule;
 use Mvc\Validation\Rules\ProhibitedRule;
+use Mvc\Validation\Rules\UniqueRule;
 
 trait RulesMapper
 {
@@ -25,6 +26,7 @@ trait RulesMapper
         'confirmed'     => ConfirmedRule::class,
         'prohibited'    => ProhibitedRule::class,
         'nullable'      => NullableRule::class,
+        'unique'        => UniqueRule::class,
     ];
 
     public static function resolve(string $rule, array $options): Rule

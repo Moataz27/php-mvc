@@ -10,9 +10,9 @@ class UniqueRule implements Rule
 
     protected string $column;
 
-    protected string $except;
+    protected ?int $except;
 
-    public function __construct(string $table, string $column, int $except)
+    public function __construct(string $table, string $column, ?int $except = null)
     {
         $this->table = $table;
         $this->column = $column;
@@ -21,7 +21,15 @@ class UniqueRule implements Rule
 
     public function apply($field, $value, $data)
     {
-        // TODO -- Select count(id) where column = value and id != $except
+        $query = 'SELECT COUNT(ID) FROM ' . $this->table . " WHERE $this->column = ?";
+        $params[] = $value;
+        if (!is_null($this->except)) {
+            $query .= ' AND ID <> ?';
+            $params[] = $this->except;
+        }
+        $count = app()->db->raw($query, $params)[0]['COUNT(ID)'];
+
+        return $count === 0;
     }
 
     public function __toString()
