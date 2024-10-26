@@ -8,6 +8,7 @@ use Mvc\Http\Request;
 use Mvc\Http\Response;
 use Mvc\Http\Route;
 use Mvc\Support\Config;
+use Mvc\Support\Session;
 
 class Application
 {
@@ -21,10 +22,13 @@ class Application
 
     protected DB $db;
 
+    protected Session $session;
+
     public function __construct()
     {
-        $this->request = new Request();
-        $this->response = new Response();
+        $this->request = new Request;
+        $this->response = new Response;
+        $this->session = new Session;
         $this->route = new Route($this->request, $this->response);
         $this->config = new Config($this->loadConfigurations());
         $this->db = new DB($this->getDatabaseDriver());
