@@ -50,7 +50,7 @@ class Validator
 
     public function passes()
     {
-        return empty($this->errors);
+        return empty($this->errors());
     }
 
     public function errors($key = null)

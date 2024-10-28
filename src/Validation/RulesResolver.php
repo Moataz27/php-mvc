@@ -22,7 +22,9 @@ trait RulesResolver
 
     public static function mapRuleFromString(string $rule): Rule
     {
-        [$rule, $options] = static::resolveStringRule($rule, ':');
+        $options = '';
+        if (str_contains($rule, ':'))
+            [$rule, $options] = static::resolveStringRule($rule, ':');
         return RulesMapper::resolve($rule, explode(',', $options));
     }
 }

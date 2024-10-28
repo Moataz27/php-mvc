@@ -1,6 +1,8 @@
 <?php
 
 use Mvc\Application;
+use Mvc\Http\Request;
+use Mvc\Http\Response;
 use Mvc\Support\Hash;
 use Mvc\View\View;
 
@@ -86,5 +88,35 @@ if (!function_exists('class_basename')) {
         $class = is_object($class) ? get_class($class) : $class;
 
         return basename(str_replace('\\', '/', $class));
+    }
+}
+
+if (!function_exists('old')) {
+    function old(string $key)
+    {
+        if (app()->session->hasFlash('old'))
+            return app()->session->getFlash('old')[$key];
+    }
+}
+
+if (!function_exists('request')) {
+    function request(string|array $key = null)
+    {
+        $request = new Request;
+
+        if ($key)
+            return $request->get($key);
+
+        if (is_array($key))
+            return $request->only($key);
+
+        return $request;
+    }
+}
+
+if (!function_exists('back')) {
+    function back()
+    {
+        return (new Response)->back();
     }
 }

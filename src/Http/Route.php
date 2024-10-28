@@ -42,7 +42,8 @@ class Route
         $method = $this->request->method();
         $action = self::$routes[$method][$path] ?? false;
 
-        if (! array_key_exists($path, self::$routes[$method])) {
+        if (!array_key_exists($path, self::$routes[$method])) {
+            $this->response->setStatusCode(404);
             View::makeError('404');
         }
 

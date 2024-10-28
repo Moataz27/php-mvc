@@ -7,10 +7,11 @@ class Session
 
     public function __construct()
     {
-        $flashMessages = $_SESSION['flash'];
+        $flashMessages = $_SESSION['flash'] ?? [];
 
-        foreach ($flashMessages ?? [] as $key => &$flashMessage)
+        foreach ($flashMessages as $key => &$flashMessage) {
             $flashMessage['remove'] = true;
+        }
 
         $_SESSION['flash'] = $flashMessages;
     }
@@ -43,7 +44,7 @@ class Session
      */
     public function has($key): bool
     {
-        return $_SESSION[$key];
+        return isset($_SESSION[$key]);
     }
 
     /**
@@ -81,16 +82,29 @@ class Session
         return $_SESSION['flash'][$key]['content'] ?? false;
     }
 
+    /**
+     * @param string $key
+     * 
+     * @return bool
+     */
+    public function hasFlash(string $key): bool
+    {
+        return isset($_SESSION['flash'][$key]);
+    }
+
     public function __destruct()
     {
         $this->removeFlash();
     }
 
+    /**
+     * @return void
+     */
     public function removeFlash(): void
     {
-        $flashMessages = $_SESSION['flash'];
+        $flashMessages = $_SESSION['flash'] ?? [];
 
-        foreach ($flashMessages ?? [] as $key => $flashMessage)
+        foreach ($flashMessages as $key => $flashMessage)
             if ($flashMessage['remove'])
                 unset($flashMessages[$key]);
 
